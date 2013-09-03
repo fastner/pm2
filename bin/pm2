@@ -261,6 +261,17 @@ commander.command('kill')
   CLI.killDaemon();
 });
 
+
+//
+// Kill
+//
+commander.command('wait')
+         .description('wait for daemon')
+         .action(function() {
+  CLI.waitForDaemon();
+});
+
+
 //
 // Catch all
 //
@@ -741,6 +752,17 @@ CLI.killDaemon = function() {
       process.exit(ERROR_EXIT);
     }
     console.info('Daemon killed');
+    process.exit(SUCCESS_EXIT);
+  });
+};
+
+CLI.waitForDaemon = function() {
+  Satan.waitForDaemon(function(err, res) {
+    if (err) {
+      console.error('Error when waiting for daemon');
+      process.exit(ERROR_EXIT);
+    }
+    console.info('Daemon exits');
     process.exit(SUCCESS_EXIT);
   });
 };
