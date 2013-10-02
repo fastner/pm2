@@ -18,6 +18,18 @@ script="echo"
 
 file_path="test/fixtures"
 
+# Determine wget / curl
+which wget
+if [ $? -eq 1 ]
+then
+    http_get="curl"
+else
+    http_get="wget"
+fi
+
+
+echo $http_get
+
 function fail {
   echo -e "######## \033[31m  ✘ $1\033[0m"
   exit 1
@@ -62,14 +74,14 @@ $pm2 start echo.js
 $pm2 start echo.js -f
 $pm2 start echo.js -f
 
-OUT=`$pm2 jlist | grep -o "restart_time" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time" | wc -l`
 [ $OUT -eq 3 ] || fail "$1"
 success "$1"
 
 $pm2 stop 12412
 $pm2 stop 0
 
-OUT=`$pm2 jlist | grep -o "restart_time" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time" | wc -l`
 [ $OUT -eq 2 ] || fail "$1"
 success "$1"
 
@@ -77,7 +89,7 @@ $pm2 stop asdsdaecho.js
 
 $pm2 stop echo.js
 
-OUT=`$pm2 jlist | grep -o "restart_time" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time" | wc -l`
 [ $OUT -eq 0 ] || fail "$1"
 success "$1"
 
@@ -125,7 +137,7 @@ sleep 0.3
 
 JSON_FILE='/tmp/web-json'
 
-wget -q http://localhost:9615/ -O $JSON_FILE
+$http_get -q http://localhost:9615/ -O $JSON_FILE
 cat $JSON_FILE | grep "HttpInterface.js" > /dev/null
 spec "Should get the right JSON with HttpInterface file launched"
 
@@ -136,7 +148,7 @@ cat ~/.pm2/logs/echo-out.log | wc -l
 spec "File Log should be cleaned"
 
 sleep 0.3
-wget -q http://localhost:9615/ -O $JSON_FILE
+$http_get -q http://localhost:9615/ -O $JSON_FILE
 cat $JSON_FILE | grep "restart_time\":0" > /dev/null
 spec "Should get the right JSON with HttpInterface file launched"
 
@@ -145,7 +157,7 @@ spec "Should get the right JSON with HttpInterface file launched"
 #
 $pm2 restart 1
 sleep 0.3
-wget -q http://localhost:9615/ -O $JSON_FILE
+$http_get -q http://localhost:9615/ -O $JSON_FILE
 OUT=`cat $JSON_FILE | grep -o "restart_time\":1" | wc -l`
 [ $OUT -eq 1 ] || fail "$1"
 success "$1"
@@ -157,7 +169,7 @@ $pm2 restart all
 spec "Should restart all processes"
 
 sleep 0.3
-wget -q http://localhost:9615/ -O $JSON_FILE
+$http_get -q http://localhost:9615/ -O $JSON_FILE
 OUT=`cat $JSON_FILE | grep -o "restart_time\":1" | wc -l`
 
 [ $OUT -eq 7 ] || fail "$1"
@@ -184,7 +196,7 @@ $pm2 stop all
 spec "Should stop all processes"
 
 sleep 0.5
-OUT=`$pm2 jlist | grep -o "restart_time" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time" | wc -l`
 [ $OUT -eq 0 ] || fail "Process not stopped"
 success "Process succesfully stopped"
 
@@ -196,19 +208,19 @@ success "Process succesfully stopped"
 PROC_NAME='ECHONEST'
 # Launch a script with name option
 $pm2 start echo.js --name $PROC_NAME
-OUT=`$pm2 jlist | grep -o "ECHONEST" | wc -l`
+OUT=`$pm2 prettylist | grep -o "ECHONEST" | wc -l`
 [ $OUT -gt 0 ] || fail "Process not launched"
 success "Processes sucessfully launched with a specific name"
 
 # Restart a process by name
 $pm2 restart $PROC_NAME
-OUT=`$pm2 jlist | grep -o "restart_time: 1" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time: 1" | wc -l`
 [ $OUT -gt 0 ] || fail "Process name not restarted"
 success "Processes sucessfully restarted with a specific name"
 
 # Stop a process by name
 $pm2 stop $PROC_NAME
-OUT=`$pm2 jlist | grep -o "ECHONEST" | wc -l`
+OUT=`$pm2 prettylist | grep -o "ECHONEST" | wc -l`
 [ $OUT -eq 0 ] || fail "Process name not stopped"
 success "Processes sucessfully stopped with a specific name"
 
@@ -222,7 +234,7 @@ $pm2 resurrect
 spec "Should resurect all apps"
 
 sleep 0.5
-OUT=`$pm2 jlist | grep -o "restart_time" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time" | wc -l`
 [ $OUT -eq 9 ] || fail "Not valid process number"
 success "Processes valid"
 
@@ -230,7 +242,7 @@ $pm2 stopAll
 spec "Should stop all processes"
 
 sleep 0.5
-OUT=`$pm2 jlist | grep -o "restart_time" | wc -l`
+OUT=`$pm2 prettylist | grep -o "restart_time" | wc -l`
 [ $OUT -eq 0 ] || fail "Process not stopped"
 success "Process succesfully stopped"
 

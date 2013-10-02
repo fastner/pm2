@@ -1,23 +1,20 @@
 ![Monit](https://github.com/unitech/pm2/raw/master/pres/pm22.png)
 
-The modern and stable CLI process manager for Node apps with native clusterization, monitoring, hot code reload, startup scripts and much more.
-
-Tested with Node v0.12, v0.11, v0.10, v0.9, v0.8 (https://travis-ci.org/Unitech/pm2).
-Works on Linux & MacOS.
-
-[![NPM](https://nodei.co/npm/pm2.png)](https://nodei.co/npm/pm2/)
+Modern CLI process manager for Node apps with builtin load-balancer
 
 [![Build Status](https://travis-ci.org/Unitech/pm2.png)](https://travis-ci.org/Unitech/pm2)
 [![Build Status](https://david-dm.org/Unitech/pm2.png)](https://david-dm.org/Unitech/pm2)
 [![NPM version](https://badge.fury.io/js/pm2.png)](http://badge.fury.io/js/pm2)
+[![Gittip donate button](http://badgr.co/gittip/docpad.png)](https://www.gittip.com/Alexandre-Strzelewicz/ "Donate weekly to this project using Gittip")
+[![Flattr donate button](https://raw.github.com/balupton/flattr-buttons/master/badge-89x18.gif)](http://flattr.com/thing/1490051/Unitechpm2-on-GitHub "Donate monthly to this project using Flattr")
 
-Blog post for some context : [Goodbye node-forever, hello PM2](http://devo.ps/blog/2013/06/26/goodbye-node-forever-hello-pm2.html)
+[![NPM](https://nodei.co/npm/pm2.png?downloads=true)](https://nodei.co/npm/pm2.png?downloads=true)
 
-# Support
+**Main Features** : monitoring, hot code reload, builtin load balancer, automatic startup script, resurrect/dump processes...
 
-If you like this module please support !
-
-[![Donate](http://unitech.io/donate.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TRF8NYRUVZXZ6)
+Tested with Node v0.11, v0.10, v0.9, v0.8 (https://travis-ci.org/Unitech/pm2).
+Compatible CoffeeScript.
+Works on Linux & MacOS.
 
 # Readme Contents
 
@@ -25,6 +22,7 @@ If you like this module please support !
 - [Usage/Features](#a2)
 - [Different ways to launch a process](#a3)
 - [Hot code reload (0s downtime)](#a16)
+- [CoffeeScript](#a19)
 - [Is my production server ready for PM2](#a4)
 - [Updating pm2 and keeping processes alive](#a5)
 - [Listing processes : pm2 list](#a6)
@@ -36,6 +34,7 @@ If you like this module please support !
 - [API health end point : pm2 web](#a12)
 - [JSON processes declaration](#a13)
 - [Launching the tests](#a14)
+- [They talk about it](#a20)
 - [License](#a15)
 
 <a name="a1"/>
@@ -115,13 +114,22 @@ $ pm2 reload all
 
 Thanks to TruongSinh Tran-Nguyen https://github.com/truongsinh
 
+<a name="a19"/>
+## CoffeeScript
+
+```bash
+$ pm2 start my_app.coffee
+```
+
+That's all !
+
 <a name="a5"/>
-## Updating pm2 and resurecting process
+## Updating pm2 and resurrecting process
 
 ```bash
 $ pm2 dump
 $ npm install -g pm2@latest
-$ pm2 kill ; pm2 resurect
+$ pm2 kill ; pm2 resurrect
 ```
 
 ## How to install the pm2 master branch
@@ -159,6 +167,7 @@ Now you can reboot your server, and already launched processes should be kepts a
 ## pm2 logs
 
 Display logs in streaming of all processes, without having to do a tail -f or something else.
+You can also pass [name|id] as parameter to stream only the log of a specified process.
 
 ![Monit](https://github.com/unitech/pm2/raw/master/pres/pm2-logs.png)
 
@@ -234,6 +243,15 @@ the process will be stopped and a message with number with restarts will be logg
 ```bash
 npm test
 ```
+
+<a name="a20"/>
+# They talk about it
+
+- https://coderwall.com/p/igdqyw
+- http://revdancatt.com/2013/09/17/node-day-1-getting-the-server-installing-node-and-pm2/
+- https://medium.com/tech-talk/e7c0b0e5ce3c
+- http://devo.ps/blog/2013/06/26/goodbye-node-forever-hello-pm2.html
+
 
 # MISC
 
