@@ -7,6 +7,17 @@ var p = require('path');
 
 DEFAULT_FILE_PATH = p.resolve(process.env.HOME, '.pm2');
 
+var getIntOrString = function(value) {
+  if (!value) {
+    return undefined;
+  }
+  var i = parseInt(value, 10);
+  if (isNaN(i)) {
+    return value;
+  }
+  return i;
+};
+
 module.exports = {
   DEFAULT_FILE_PATH  : DEFAULT_FILE_PATH,
   PM2_LOG_FILE_PATH  : p.join(p.resolve(process.env.HOME, '.pm2'), 'pm2.log'),
@@ -15,8 +26,8 @@ module.exports = {
   DUMP_FILE_PATH     : p.join(DEFAULT_FILE_PATH, 'dump.pm2'),
 
   DAEMON_BIND_HOST   : process.env.PM2_HOST || 'localhost',
-  DAEMON_RPC_PORT    : process.env.PM2_RPC_SOCKET_ADDR || 6666, // RPC commands
-  DAEMON_PUB_PORT    : process.env.PM2_PUB_SOCKET_ADDR || 6667, // Realtime events
+  DAEMON_RPC_PORT    : getIntOrString(process.env.PM2_RPC_SOCKET_ADDR) || 6666, // RPC commands
+  DAEMON_PUB_PORT    : getIntOrString(process.env.PM2_PUB_SOCKET_ADDR) || 6667, // Realtime events
 
   CODE_UNCAUGHTEXCEPTION : 100,
   
